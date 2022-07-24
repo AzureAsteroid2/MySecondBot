@@ -37,6 +37,8 @@ async def on_message(m): #actions when a discord message is sent
      await m.channel.send("type !blackjack to play again!")
     elif (type(result) is list) is True:
       await m.channel.send(result[0])
+    elif result == "You cannot play rn. Wait your turn or finish your game":
+      await m.channel.send(result)
     else:
       while True:
         if (type(result) is list) is True:
