@@ -6,12 +6,15 @@ class Blackjack:
     self.bnumber = 0 #bot number
     self.ace = False
   def start(self, user):
-    self.unumber = (randint(1,21))
-    self.bnumber = (randint(1,21))
+    self.unumber = (randint(2,21))
+    self.bnumber = (randint(2,21))
+    if self.unumber in [2, 3]:
+      self.unumber += 10
     while self.bnumber <= 13:
       self.bnumber += (randint(1,10))
     if self.bnumber > 21:
       result = ["I'm stupid", "end"]
+      return result
     if self.unumber == 21:
       result = "Wow you won!... cheater"
       return result
