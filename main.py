@@ -32,19 +32,19 @@ async def on_message(m): #actions when a discord message is sent
     await m.channel.send(file=discord.File('Media/hello_mario.mp3')) #sends mp3 of "hello mario"
   if m.content.startswith("!blackjack"): #plays a quick game of blackjack with you
     result = urmom.start(m)
+    msg = await m.channel.send('loading...')
     if result == "Wow you won!... cheater":  
-     await m.channel.send(result)
-     await m.channel.send("type !blackjack to play again!")
+     await msg.edit(content= result)
     elif (type(result) is list) is True:
-      await m.channel.send(result[0])
+      await msg.edit(content= result[0])
     elif result == "You cannot play rn. Wait your turn or finish your game":
-      await m.channel.send(result)
+      await msg.edit(content= result)
     else:
       while True:
         if (type(result) is list) is True:
-          await m.channel.send(result[0])
+          await msg.edit(content= result[0])
         else:
-          msg = await m.channel.send(result)
+          await msg.edit(content= result)
         if (type(result) is list) is True:
           await m.channel.send("kill me")
           break
@@ -62,14 +62,18 @@ async def on_message(m): #actions when a discord message is sent
           try:
             reaction, user = await client.wait_for("reaction_add", timeout=60.0, check=check)
           except asyncio.TimeoutError:
-            await m.channel.send("Dang you took too long. Loser")
+            await msg.edit(content="Dang you took too long. Loser")
             break
           else:
             if reaction.emoji == reaction1: 
               result = urmom.hit()
             elif reaction.emoji == reaction2:
               result = urmom.end()
-          
+          try: #tries to remove the user's reactions. ignores it if it doesn't have permission.
+            msg.remove_reaction(reaction1, m.author.id)
+            msg.remove_reaction(reaction2, m.author.id)
+          except discord.Forbidden:
+            pass
   if m.content.startswith("!moon"): #not done yet
     pass
 client.run(os.environ['token'])
