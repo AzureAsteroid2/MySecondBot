@@ -1,16 +1,16 @@
 """Handles the LARGE data from this program."""
-from random import randrange
+from random import randint
 class Blackjack:
   def __init__(self):
-    self.usernumber = 0 #user number
-    self.botnumber = 0 #bot number
+    self.unumber = 0 #user number
+    self.bnumber = 0 #bot number
     self.ace = False
   def start(self, user):
-    self.unumber.user = (randint(1,21))
-    self.bnumber.user = (randint(1,21))
-    while self.bnumber.user <= 13:
-      self.bnumber.user += (randint(1,10))
-    if self.bnumber.user > 21:
+    self.unumber = (randint(1,21))
+    self.bnumber = (randint(1,21))
+    while self.bnumber <= 13:
+      self.bnumber += (randint(1,10))
+    if self.bnumber > 21:
       result = ["I'm stupid", "end"]
     if self.unumber == 21:
       result = "Wow you won!... cheater"
