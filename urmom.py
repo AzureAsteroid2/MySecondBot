@@ -13,10 +13,10 @@ class Blackjack:
     while self.bnumber <= 13:
       self.bnumber += (randint(1,10))
     if self.bnumber > 21:
-      result = ["I'm stupid", "end"]
+      result = [f"I'm stupid You:{self.unumber} Me: {self.bnumber}", "end"]
       return result
     if self.unumber == 21:
-      result = "Wow you won!... cheater"
+      result = f"Wow you won!... cheater You:{self.unumber} Me:{self.bnumber}"
       return result
     else:
       result = f"You have {self.unumber}. Do you want a hit?"
