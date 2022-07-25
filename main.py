@@ -63,6 +63,7 @@ async def on_message(m): #actions when a discord message is sent
             reaction, user = await client.wait_for("reaction_add", timeout=60.0, check=check)
           except asyncio.TimeoutError:
             await msg.edit(content="Dang you took too long. Loser")
+            urmom.reset()
             break
           else:
             if reaction.emoji == reaction1: 

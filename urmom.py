@@ -57,4 +57,5 @@ class Blackjack:
       return [f"You lost loser. You:{self.unumber}. Me:{self.bnumber}", "end"]
     else:
       return [f"You won! You:{self.unumber}, Me:{self.bnumber}", "end"]
-  
+  def reset(self): #resets the run object if the game ends without input.
+    self.run = True
