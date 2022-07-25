@@ -70,8 +70,8 @@ async def on_message(m): #actions when a discord message is sent
             elif reaction.emoji == reaction2:
               result = urmom.end()
           try: #tries to remove the user's reactions. ignores it if it doesn't have permission.
-            msg.remove_reaction(reaction1, m.author.id)
-            msg.remove_reaction(reaction2, m.author.id)
+            await msg.remove_reaction(reaction1, m.author.id)
+            await msg.remove_reaction(reaction2, m.author.id)
           except discord.Forbidden:
             pass
   if m.content.startswith("!moon"): #not done yet
