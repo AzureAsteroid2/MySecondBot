@@ -38,7 +38,10 @@ async def on_message(m): #actions when a discord message is sent
   if m.content.startswith("!perish"): #sends an insult
     await m.channel.send(insults.insult_handler())
   if m.content.startswith("!james"): #!sends a funny mp3 (consider making it join the vc)
-    await m.channel.send(file=discord.File('Media/hello_mario.mp3')) #sends mp3 of "hello mario"
+    try:
+      await m.channel.send(file=discord.File('Media/hello_mario.mp3')) #sends mp3 of "hello mario"
+    except discord.Forbidden:
+      await m.channel.send("I don't have the permissions I need! No command for you")
   if m.content.startswith("!blackjack"): #plays a quick game of blackjack with you
     result = urmom.start(m)
     msg = await m.channel.send('loading...')
