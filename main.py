@@ -1,9 +1,16 @@
-import discord, time, os, pytz, urmom, asyncio
+"""This bot is a passion project for discord and little else. If I want to do something.
+This bot will one day make it possible. 
+
+(To-Do: Change commands to be under ctx or @bot.command(), Image editor,
+Have the !perish command get insults from a database instead of a txt file)"""
+
+import discord, time, os, pytz, asyncio
 from datetime import datetime
 from Modules.insults import Insults
+from Modules.urmom import Blackjack
 from Server.keep_alive import keep_alive
 keep_alive()
-urmom = urmom.Blackjack()
+urmom = Blackjack()
 insults = Insults()
 client = discord.Client()
 @client.event
@@ -17,6 +24,8 @@ async def on_message(m): #actions when a discord message is sent
     message = await m.channel.send("Pong!")
     ping = int((time.monotonic() - before) *1000)
     await message.edit(content = f"Pong! {ping}ms")
+  if m.content.startswith("!test"): #replaceable 
+    pass
   if m.content.startswith("!friday"): #detects if it's friday or not and sends a message
     utc = pytz.utc
     today = datetime.now(utc)
@@ -42,9 +51,9 @@ async def on_message(m): #actions when a discord message is sent
     else:
       while True:
         if (type(result) is list) is True:
-          await msg.edit(content= f'{result[0]} \n kill me')
+          await msg.edit(content= f'{result[0]} \n kill me') #end of the game. Sends results
           break
-        else:
+        else: #continues the game.
           await msg.edit(content= result)
           reaction1 = '✅'
           reaction2 = '❎'

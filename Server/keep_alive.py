@@ -1,3 +1,6 @@
+"""Keeps the bot running 24/7 with the help of
+uptimerobot."""
+
 from flask import Flask
 from threading import Thread
 
