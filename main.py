@@ -42,13 +42,10 @@ async def on_message(m): #actions when a discord message is sent
     else:
       while True:
         if (type(result) is list) is True:
-          await msg.edit(content= result[0])
-        else:
-          await msg.edit(content= result)
-        if (type(result) is list) is True:
-          await m.channel.send("kill me")
+          await msg.edit(content= f'{result[0]} \n kill me')
           break
         else:
+          await msg.edit(content= result)
           reaction1 = '✅'
           reaction2 = '❎'
           await msg.add_reaction(reaction1)
