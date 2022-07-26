@@ -6,14 +6,16 @@ Have the !perish command get insults from a database instead of a txt file)"""
 
 import discord, time, os, pytz, asyncio
 from discord.ext import commands
+from Modules.twealer import Twealer
 from datetime import datetime
 from Modules.insults import Insults
 from Modules.urmom import Blackjack
 from Server.keep_alive import keep_alive
+#initialize all classes
 keep_alive()
 urmom = Blackjack()
 insults = Insults()
-client = discord.Client()
+twit = Twealer()
 bot = commands.Bot(command_prefix="!")
 @bot.event
 async def on_ready(): #The bot is ready :)
@@ -45,14 +47,14 @@ async def james(ctx):
   except discord.Forbidden:
     await ctx.send("I don't have the permissions I need! No command for you")
 @bot.command()
-async def blackjack(ctx):
+async def blackjack(ctx): #runs and manages a game of blackjack
   result = urmom.start(ctx.author)
   msg = await ctx.send('loading...')
   if result == "Wow you won!... cheater":  
    await msg.edit(content= result)
-  elif (type(result) is list) is True:
+  elif (type(result) is list) is True: #if it returns a list. The game has ended
     await msg.edit(content= result[0])
-  elif result == "You cannot play rn. Wait your turn or finish your game":
+  elif result == "You cannot play rn. Wait your turn or finish your game": #someone else is playing
     await msg.edit(content= result)
   else:
     while True:
@@ -72,10 +74,11 @@ async def blackjack(ctx):
             if str(reaction.emoji) == reaction2:
               return user == ctx.author and str(reaction.emoji) == reaction2
         try:
+          #waits for a reaction. If none is sent. end the game. 
           reaction, user = await bot.wait_for("reaction_add", timeout=60.0, check=check)
         except asyncio.TimeoutError:
           await msg.edit(content="Dang you took too long. Loser")
-          urmom.reset()
+          urmom.reset() #prevents the game from being unplayable
           break
         else:
           if reaction.emoji == reaction1: 
@@ -88,8 +91,8 @@ async def blackjack(ctx):
         except discord.Forbidden:
           pass
 @bot.command()
-async def moon(ctx):
-  pass
+async def tweet(ctx, arg = 'mymoonphaseapp'):
+  await ctx.send(twit.steal(arg))
 bot.run(os.environ['token'])
 
 """
