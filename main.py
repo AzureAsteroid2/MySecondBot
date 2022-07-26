@@ -16,7 +16,7 @@ keep_alive()
 urmom = Blackjack()
 insults = Insults()
 twit = Twealer()
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix="!", case_insensitive = True)
 @bot.event
 async def on_ready(): #The bot is ready :)
   print("Ready")
@@ -36,14 +36,20 @@ async def friday(ctx):
     await ctx.send("No... not Friday...")
 @bot.command()
 async def jacob(ctx):
+  """Callout to Jacob."""
   await ctx.send("He's uber gay")
 @bot.command()
 async def perish(ctx):
+  """Sends an insult"""
   await ctx.send(insults.insult_handler())
 @bot.command()
 async def james(ctx):
+  """Sends an mp3 file for James. He's a cool guy"""
   try:
-    await ctx.send(file=discord.File('Media/hello_mario.mp3'))
+    message = await ctx.send(file=discord.File('Media/hello_mario.mp3'))
+    reactions = ["🇭", "ℹ️", "👀", "🇲", "🇦", "🇷", "🇮", "🇴", "‼️"]
+    for i in reactions:
+      await message.add_reaction(i)
   except discord.Forbidden:
     await ctx.send("I don't have the permissions I need! No command for you")
 @bot.command()
@@ -91,10 +97,17 @@ async def blackjack(ctx): #runs and manages a game of blackjack
         except discord.Forbidden:
           pass
 @bot.command()
-async def tweet(ctx, arg = 'mymoonphaseapp'):
-  await ctx.send(twit.steal(arg))
-bot.run(os.environ['token'])
+async def tweet(ctx, twitterid = 'mymoonphaseapp'):
+  """Posts the tweet using a twitterid (the @name)."""
+  await ctx.send(twit.steal(twitterid))
 
+@bot.command()
+async def tweet_daily(ctx, twitterid):
+  """Sets up daily tweets from whatever twitterid you choose"""
+  pass
+
+  
+bot.run(os.environ['token'])
 """
 @client.event
 async def on_message(m): #actions when a discord message is sent
