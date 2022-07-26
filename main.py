@@ -5,6 +5,7 @@ This bot will one day make it possible.
 Have the !perish command get insults from a database instead of a txt file)"""
 
 import discord, time, os, pytz, asyncio
+from discord.ext import commands
 from datetime import datetime
 from Modules.insults import Insults
 from Modules.urmom import Blackjack
@@ -13,17 +14,95 @@ keep_alive()
 urmom = Blackjack()
 insults = Insults()
 client = discord.Client()
-@client.event
+bot = commands.Bot(command_prefix="!")
+@bot.event
 async def on_ready(): #The bot is ready :)
   print("Ready")
+@bot.command()
+async def ping(ctx):
+  before = time.monotonic()
+  message = await ctx.send("Pong!")
+  ping = int((time.monotonic() - before) *1000)
+  await message.edit(content = f"Pong! {ping}ms")
+@bot.command()
+async def friday(ctx):
+  utc = pytz.utc
+  today = datetime.now(utc)
+  if today.weekday() == 4:
+    await ctx.send("Today is Friday! TGIF!")
+  else:
+    await ctx.send("No... not Friday...")
+@bot.command()
+async def jacob(ctx):
+  await ctx.send("He's uber gay")
+@bot.command()
+async def perish(ctx):
+  await ctx.send(insults.insult_handler())
+@bot.command()
+async def james(ctx):
+  try:
+    await ctx.send(file=discord.File('Media/hello_mario.mp3'))
+  except discord.Forbidden:
+    await ctx.send("I don't have the permissions I need! No command for you")
+@bot.command()
+async def blackjack(ctx):
+  result = urmom.start(ctx.author)
+  msg = await ctx.send('loading...')
+  if result == "Wow you won!... cheater":  
+   await msg.edit(content= result)
+  elif (type(result) is list) is True:
+    await msg.edit(content= result[0])
+  elif result == "You cannot play rn. Wait your turn or finish your game":
+    await msg.edit(content= result)
+  else:
+    while True:
+      if (type(result) is list) is True:
+        await msg.edit(content= f'{result[0]} \n kill me') #end of the game. Sends results
+        break
+      else: #continues the game.
+        await msg.edit(content= result)
+        reaction1 = '✅'
+        reaction2 = '❎'
+        await msg.add_reaction(reaction1)
+        await msg.add_reaction(reaction2)
+        def check(reaction, user):
+          if user == ctx.author:
+            if str(reaction.emoji) == reaction1:
+              return user == ctx.author and str(reaction.emoji) == reaction1
+            if str(reaction.emoji) == reaction2:
+              return user == ctx.author and str(reaction.emoji) == reaction2
+        try:
+          reaction, user = await bot.wait_for("reaction_add", timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+          await msg.edit(content="Dang you took too long. Loser")
+          urmom.reset()
+          break
+        else:
+          if reaction.emoji == reaction1: 
+            result = urmom.hit()
+          elif reaction.emoji == reaction2:
+            result = urmom.end()
+        try: #tries to remove the user's reactions. ignores it if it doesn't have permission.
+          await msg.remove_reaction(reaction1, ctx.author)
+          await msg.remove_reaction(reaction2, ctx.author)
+        except discord.Forbidden:
+          pass
+@bot.command()
+async def moon(ctx):
+  pass
+bot.run(os.environ['token'])
+
+"""
 @client.event
 async def on_message(m): #actions when a discord message is sent
   before = time.monotonic()
   m.content = m.content.lower() 
+  
   if m.content.startswith("!ping"): #gives you the ping for the response
     message = await m.channel.send("Pong!")
     ping = int((time.monotonic() - before) *1000)
     await message.edit(content = f"Pong! {ping}ms")
+    
   if m.content.startswith("!test"): #replaceable 
     pass
   if m.content.startswith("!friday"): #detects if it's friday or not and sends a message
@@ -86,5 +165,6 @@ async def on_message(m): #actions when a discord message is sent
             pass
   if m.content.startswith("!moon"): #not done yet
     pass
+  await bot.process_commands(m)
 client.run(os.environ['token'])
-
+"""
