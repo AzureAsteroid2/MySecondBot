@@ -1,7 +1,53 @@
-"""Handles the LARGE data from this program."""
+"""Handles the LARGE data from this program.
+Also runs blackjack. (Future endeavors:
+multiplayer. Actual cards in the deck)"""
 from random import randint
+import asyncio
 class Blackjack:
   def __init__(self):
+    self.users = {}
+    self.msg = {}
+    self.cards = {}
+    self.values = {}
+    self.reactions = ['✅','❎']
+  async def start(self, ctx, bot):
+    self.users[ctx.author] = ["question", 0, 0, "false"]
+    self.msg[ctx.author] = await ctx.send("loading...")
+    
+  async def game(self, ctx, bot):
+    def check(self, reaction, user, author):
+      """helper function that checks if a message was reacted to"""
+      if user == author:
+        if str(reaction.emoji) == self.reactions[0]:
+          return user == author and str(reaction.emoji) == self.reactions[0]
+        if str(reaction.emoji) == self.reactions[1]:
+          return user == author and str(reaction.emoji) == self.reactions[1]
+    m = self.msg.get(ctx.author)
+    for i in range(2):
+      await m.add_reaction(self.reactions[i])
+    try:
+      reaction, user, ctx.author = await bot.wait_for("reaction_add", timeout=20.0, check=check)
+    except asyncio.TimeoutError:
+      await m.edit(content="Dang you took too long. Loser")
+  async def deck(self, ctx):
+    def setup(self):
+      temp = []
+      self.cards[ctx.author] = [] #TODO insert emojis of every card
+      for i in range(9):
+        if i < 9:
+          for x in range(4):
+            temp.append(f"{i}")
+        else:
+          for x in range(12):
+            temp.append(f"{i}")
+      return temp
+      self.values[ctx.author] = setup()
+  async def end(self,ctx,bot):
+    pass
+  
+  """
+  def __init__(self):
+    #convert variables to dictionaries
     self.unumber = 0 #user number
     self.bnumber = 0 #bot number
     self.ace = False
@@ -59,3 +105,4 @@ class Blackjack:
       return [f"You won! You:{self.unumber}, Me:{self.bnumber}", "end"]
   def reset(self): #resets the run object if the game ends without input.
     self.run = True
+    """
