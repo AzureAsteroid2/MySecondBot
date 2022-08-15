@@ -1,7 +1,113 @@
-"""Handles the LARGE data from this program."""
+"""Handles the LARGE data from this program.
+Also runs blackjack. (Future endeavors:
+multiplayer. Actual cards in the deck)"""
 from random import randint
+import asyncio, discord
 class Blackjack:
   def __init__(self):
+    self.users = {}
+    self.msg = {}
+    self.cards = {}
+    self.values = {}
+    self.reactions = ['✅','❎']
+  async def start(self, ctx, bot):
+    if ctx.author in self.users:
+      await ctx.send("You're already playing a game! Stupid. I killed your other session because you can't pay attention")
+      await self.finish(ctx.author)
+    else:
+      self.users[ctx.author] = ["question", 0, 0, 0, "no"] #question can be used later
+      self.msg[ctx.author] = await ctx.send("loading...")
+      await self.deck_setup(ctx)
+      await self.game(ctx, bot)
+  async def game(self, ctx, bot):
+    """The game is played here"""
+    def check(reaction, user):
+      """helper function that checks if a message was reacted to"""
+      if user == ctx.author:
+        if str(reaction.emoji) == self.reactions[0]:
+          return user == ctx.author and str(reaction.emoji) == self.reactions[0]
+        if str(reaction.emoji) == self.reactions[1]:
+          return user == ctx.author and str(reaction.emoji) == self.reactions[1]
+    m = self.msg.get(ctx.author)
+    for i in range(2):
+      await self.hit(ctx)
+    await m.edit(content=f"you: {self.users[ctx.author][1]} \nThe card you can see from me: {self.users[ctx.author][3]}")
+    while True:
+      for i in range(2):
+        await m.add_reaction(self.reactions[i])
+      try:
+        reaction, user, = await bot.wait_for("reaction_add", timeout=30.0, check=check)
+      except asyncio.TimeoutError:
+        await m.edit(content="Dang you took too long. Loser")
+        await self.finish(ctx.author, m)
+        break
+      else:
+          if reaction.emoji == self.reactions[0]: 
+            await self.hit(ctx)
+            if self.users[ctx.author][1] > 21:
+              await self.finish(ctx.author, m)
+              break
+            else:
+              await m.edit(content=f"you: {self.users[ctx.author][1]} \nThe card you can see from me: {self.users[ctx.author][3]}")
+          elif reaction.emoji == self.reactions[1]:
+            await self.finish(ctx.author, m)
+            break
+            #insert pass logic
+      try: #tries to remove the user's reactions. ignores it if it doesn't have permission.
+        await m.remove_reaction(self.reactions[0], ctx.author)
+        await m.remove_reaction(self.reactions[1], ctx.author)
+      except discord.Forbidden:
+        pass
+  async def deck_setup(self, ctx):
+    self.values[ctx.author] = await self.setup(ctx)
+  async def hit(self, ctx):
+    temp = int(self.values[ctx.author][randint(0, len(self.values[ctx.author]))])
+    if self.users[ctx.author][1] < 11 and temp == 1:
+      self.users[ctx.author][1] += 11
+      self.users[ctx.author][4] == "yes"
+    else:
+      self.users[ctx.author][1] += temp
+    if self.users[ctx.author][1] > 21 and self.users[ctx.author][4] == "yes":
+      self.users[ctx.author][1] -= 10
+      self.users[ctx.author][4] == "no"
+  async def setup(self, ctx):
+      temp = []
+      loop = -1
+      self.cards[ctx.author] = [] #TODO insert emojis of every card
+      for i in range(10):
+        i += 1
+        if i < 10:
+          for x in range(4):
+            temp.append(i)
+        else:
+          for x in range(16):
+            temp.append(i)
+      while True:
+        loop += 1
+        if loop >= 0 and self.users[ctx.author][2] < 13:
+          self.users[ctx.author][2] += temp.pop(randint(0, 51 - loop))
+        else:
+          break
+        if loop == 0:
+          self.users[ctx.author][3] += self.users[ctx.author][2]
+      return temp
+  async def finish(self, author, m = ""):
+    if m != "":
+      if self.users[author][1] > 21:
+        await m.edit(content=f"You busted stupid.\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}")
+      elif self.users[author][1] > self.users[author][2]:
+        await m.edit(content=f"Congrats on winning\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}")
+      elif self.users[author][1] <= self.users[author][2]:
+        await m.edit(content=f"Loser\nYou: {self.users[author][1]}\nMe: {self.users[author][2]} ")
+    self.users.pop(author)
+    self.msg.pop(author)
+    self.cards.pop(author)
+    self.values.pop(author)
+    
+  
+  """
+  def __init__(self):
+    #convert variables to dictionaries
     self.unumber = 0 #user number
     self.bnumber = 0 #bot number
     self.ace = False
@@ -59,3 +165,4 @@ class Blackjack:
       return [f"You won! You:{self.unumber}, Me:{self.bnumber}", "end"]
   def reset(self): #resets the run object if the game ends without input.
     self.run = True
+    """

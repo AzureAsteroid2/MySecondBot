@@ -2,7 +2,7 @@
 This bot will one day make it possible. 
 
 (To-Do: Change commands to be under ctx or @bot.command(), Image editor,
-Have the !perish command get insults from a database instead of a txt file)"""
+Have the !perish command get insults from a database instead of a txt file, Have users and a balance)"""
 
 import discord, time, os, pytz, asyncio
 from discord.ext import commands
@@ -54,6 +54,8 @@ async def james(ctx):
     await ctx.send("I don't have the permissions I need! No command for you")
 @bot.command()
 async def blackjack(ctx): #runs and manages a game of blackjack
+  await urmom.start(ctx, bot)
+  """
   result = urmom.start(ctx.author)
   msg = await ctx.send('loading...')
   if result == "Wow you won!... cheater":  
@@ -96,6 +98,7 @@ async def blackjack(ctx): #runs and manages a game of blackjack
           await msg.remove_reaction(reaction2, ctx.author)
         except discord.Forbidden:
           pass
+          """
 @bot.command()
 async def tweet(ctx, twitterid = 'mymoonphaseapp'):
   """Posts the tweet using a twitterid (the @name)."""
