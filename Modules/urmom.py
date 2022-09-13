@@ -39,18 +39,18 @@ class Blackjack:
         reaction, user, = await bot.wait_for("reaction_add", timeout=30.0, check=check)
       except asyncio.TimeoutError:
         await m.edit(content="Dang you took too long. Loser")
-        await self.finish(ctx.author, m)
+        await self.finish(ctx.author, m, ctx)
         break
       else:
           if reaction.emoji == self.reactions[0]: 
             await self.hit(ctx)
             if self.users[ctx.author][1] > 21:
-              await self.finish(ctx.author, m)
+              await self.finish(ctx.author, m, ctx)
               break
             else:
               await m.edit(content=f"you: {self.users[ctx.author][1]} \nThe card you can see from me: {self.users[ctx.author][3]}")
           elif reaction.emoji == self.reactions[1]:
-            await self.finish(ctx.author, m)
+            await self.finish(ctx.author, m, ctx)
             break
             #insert pass logic
       try: #tries to remove the user's reactions. ignores it if it doesn't have permission.
@@ -91,14 +91,15 @@ class Blackjack:
         if loop == 0:
           self.users[ctx.author][3] += self.users[ctx.author][2]
       return temp
-  async def finish(self, author, m = ""):
+  async def finish(self, author, m = "", ctx = ""):
     if m != "":
       if self.users[author][1] > 21:
-        await m.edit(content=f"You busted stupid.\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}")
+        await m.edit(content=f"You busted stupid.\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}\nYour reaction rn:")
       elif self.users[author][1] > self.users[author][2]:
-        await m.edit(content=f"Congrats on winning\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}")
+        await m.edit(content=f"Congrats on winning\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}\nMy reaction rn:")
       elif self.users[author][1] <= self.users[author][2]:
-        await m.edit(content=f"Loser\nYou: {self.users[author][1]}\nMe: {self.users[author][2]} ")
+        await m.edit(content=f"Loser\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}\nYour reaction rn:")
+      await ctx.send("https://cdn.discordapp.com/attachments/938737694631161869/1019084787039875082/kazuma_kiryu_slams_a_desk_and_leaves.gif")
     self.users.pop(author)
     self.msg.pop(author)
     self.cards.pop(author)

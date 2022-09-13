@@ -10,6 +10,11 @@ class Twealer:
   def __init__(self):
     pass
   def steal(self, name = "mymoonphaseapp"):
-    tweet = api.user_timeline(screen_name = name, count=1)[0]
-    result = f'https://twitter.com/{name}/status/{tweet.id}'
-    return result
+    if name[0] == "":
+      name = name[1:]
+    try:
+      tweet = api.user_timeline(screen_name = name, count=1)[0]
+      result = f'https://twitter.com/{name}/status/{tweet.id}'
+      return result
+    except IndexError:
+      return "This twitter account does not exist"
