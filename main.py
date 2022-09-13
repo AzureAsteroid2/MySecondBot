@@ -4,7 +4,7 @@ This bot will one day make it possible.
 (To-Do: Change commands to be under ctx or @bot.command(), Image editor,
 Have the !perish command get insults from a database instead of a txt file, Have users and a balance)"""
 
-import discord, time, os, pytz, asyncio
+import discord, time, os, pytz, asyncio, subprocess
 from discord.ext import commands
 from Modules.twealer import Twealer
 from datetime import datetime
@@ -110,7 +110,10 @@ async def tweet_daily(ctx, twitterid):
   pass
 
   
-bot.run(os.environ['token'])
+try:
+  bot.run(os.environ['token'])
+except:
+  subprocess.run("kill 1", shell = True)
 """
 @client.event
 async def on_message(m): #actions when a discord message is sent
