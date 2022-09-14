@@ -113,6 +113,7 @@ async def tweet_daily(ctx, twitterid):
 try:
   bot.run(os.environ['token'])
 except:
+  print("restarting")
   subprocess.run("kill 1", shell = True)
 """
 @client.event
