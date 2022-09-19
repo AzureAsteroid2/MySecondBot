@@ -99,6 +99,8 @@ class Blackjack:
         await m.edit(content=f"Congrats on winning\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}\nMy reaction rn:")
       elif self.users[author][1] <= self.users[author][2] and self.users[author][2] <= 21:
         await m.edit(content=f"Loser\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}\nYour reaction rn:")
+      elif self.users[author][1] == self.users[author][2]:
+        await m.edit(content=f"We tied...\nYou: {self.users[author][1]}\nMe: {self.users[author][2]}\nOur reaction rn:")
       await m.clear_reactions()
       await ctx.send("https://cdn.discordapp.com/attachments/938737694631161869/1019084787039875082/kazuma_kiryu_slams_a_desk_and_leaves.gif")
     self.users.pop(author)
