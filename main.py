@@ -5,6 +5,7 @@ This bot will one day make it possible.
 Have the !perish command get insults from a database instead of a txt file, Have users and a balance)"""
 
 import discord, time, os, pytz, asyncio, subprocess
+from random import randint
 from discord.ext import commands
 from Modules.twealer import Twealer
 from datetime import datetime
@@ -27,6 +28,19 @@ async def ping(ctx):
   ping = int((time.monotonic() - before) *1000)
   await message.edit(content = f"Pong! {ping}ms")
 @bot.command()
+async def flip(ctx):
+  number = randint(1,2)
+  try:
+    if number == 1:
+      message = await ctx.send(file=discord.File('Media/Heads.png'))
+      reactions = ["🇭", "🇪", "🇦", "🇩", "🇸"]
+    else:
+      message = await ctx.send(file=discord.File('Media/Tails.png'))
+      reactions = ["🇹", "🇦", "🇮", "🇱", "🇸"]
+    for i in reactions:
+      await message.add_reaction(i)
+  except discord.Forbidden:
+    await ctx.send("I don't have the permissions I need! No command for you")
 async def friday(ctx):
   utc = pytz.utc
   today = datetime.now(utc)
