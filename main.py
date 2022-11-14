@@ -13,12 +13,14 @@ from Modules.insults import Insults
 from Modules.urmom import Blackjack
 from Server.keep_alive import keep_alive
 from Modules.error_handler import ErrorChad
+from Modules.users import EliteUsers
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
 insults = Insults()
 twit = Twealer()
 ErrorChad = ErrorChad()
+elite = EliteUsers()
 bot = commands.Bot(command_prefix="!", case_insensitive = True)
 
 
@@ -42,11 +44,14 @@ async def ping(ctx):
   
 @bot.command()
 async def flip(ctx, flips = 1):
+  """Flips a coin (or multiple) for a user"""
   heads = 0
   tails = 0
+  #controls how many flips the bot will take in
+  amount = 100000
   if flips <= 0:
     await ctx.send("Only use whole positive numbers.")
-  elif flips > 1:
+  elif flips > 1 and flips <= amount:
     for i in range(flips):
       number = randint(1,2)
       if number == 1:
@@ -59,6 +64,8 @@ async def flip(ctx, flips = 1):
       temp = 'Media/Tails.png'
     await ctx.send(f"You had {heads} heads and {tails} tails")
     await ctx.send(file=discord.File(temp))
+  elif flips > amount:
+    await ctx.send(f"Only {amount} flips or less!")
   else:
     number = randint(1,2)
     message = ctx
@@ -95,7 +102,24 @@ async def perish(ctx):
   """Sends an insult"""
   await ctx.send(insults.insult_handler())
 
+@bot.command()
+async def perishadd(ctx, *message):
+  """adds an insult (if the user is cool B))"""
+  result = elite.elite_gang(ctx)
   
+  if result and message != ():
+    await insults.insult_adder(message)
+    await ctx.send("Your insult has been added. 😎 ")
+  elif result and message == ():
+    await ctx.send("You have to add an insult you know...")
+  else:
+    await ctx.send("You don't have permissions. That's an L")
+
+@bot.command()
+async def Eliteadd(ctx, message):
+  """adds a new elite user (only usable by me)"""
+  pass
+
 @bot.command()
 async def james(ctx):
   """Sends an mp3 file for James. He's a cool guy"""

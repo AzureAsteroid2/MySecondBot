@@ -10,5 +10,10 @@ class Insults:
     amount = len(all_insults)
     result = all_insults[(randint(0, amount))]
     return result
+  async def insult_adder(self, message):
+    message = " ".join(message)
+    with open('Modules/Text_Files/insults.txt', 'a') as temp:
+      temp.write(f"`{message}")
+      temp.close()
     
     
