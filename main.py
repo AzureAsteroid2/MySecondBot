@@ -40,6 +40,7 @@ async def ping(ctx):
   message = await ctx.send("Pong!")
   ping = int((time.monotonic() - before) *1000)
   await message.edit(content = f"Pong! {ping}ms")
+  await ctx.message.delete()
 
   
 @bot.command()
@@ -101,14 +102,14 @@ async def jacob(ctx):
 async def perish(ctx):
   """Sends an insult"""
   await ctx.send(insults.insult_handler())
-
+  await ctx.message.delete()
 @bot.command()
 async def perishadd(ctx, *message):
   """adds an insult (if the user is cool B))"""
-  result = elite.elite_gang(ctx)
+  result = elite.elite_gang(ctx.message.author.id)
   
   if result and message != ():
-    await insults.insult_adder(message)
+    await insults.insult_adder(ctx, message)
     await ctx.send("Your insult has been added. 😎 ")
   elif result and message == ():
     await ctx.send("You have to add an insult you know...")
@@ -116,10 +117,28 @@ async def perishadd(ctx, *message):
     await ctx.send("You don't have permissions. That's an L")
 
 @bot.command()
-async def Eliteadd(ctx, message):
+async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""
-  pass
+  result = elite.elite_gang(message)
+  if ctx.author.id == 132353613715603456 and result is False:
+    await ctx.send("The user was successfully added")
+    await elite.elite_add(ctx, message)
+  elif ctx.author.id == 132353613715603456 and result is True:
+    await ctx.send("The user is already an elite!")
+  else:
+    await ctx.send("You can't control me! I'll do what I want!")
 
+@bot.command()
+async def eliteremove(ctx, message):
+  result = elite.elite_gang(message)
+  if ctx.author.id == 132353613715603456 and result is False:
+    await ctx.send("The user isn't an elite!")
+  elif ctx.author.id == 132353613715603456 and result is True:
+    await ctx.send("The user has been removed")
+    await elite.elite_remove(ctx, message)
+  else:
+    await ctx.send("You can't control me! I'll do what I want!")
+    
 @bot.command()
 async def james(ctx):
   """Sends an mp3 file for James. He's a cool guy"""
@@ -154,3 +173,5 @@ try:
 except:
   print("restarting")
   subprocess.run("kill 1", shell = True)
+
+
