@@ -14,6 +14,7 @@ from Modules.urmom import Blackjack
 from Server.keep_alive import keep_alive
 from Modules.error_handler import ErrorChad
 from Modules.users import EliteUsers
+from Modules.reactions import React
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
@@ -21,6 +22,7 @@ insults = Insults()
 twit = Twealer()
 ErrorChad = ErrorChad()
 elite = EliteUsers()
+reaction = React()
 bot = commands.Bot(command_prefix="!", case_insensitive = True)
 
 
@@ -48,7 +50,7 @@ async def flip(ctx, flips = 1):
   """Flips a coin (or multiple) for a user"""
   heads = 0
   tails = 0
-  #controls how many flips the bot will take in
+  #controls the max amount of flips the bot will process
   amount = 100000
   if flips <= 0:
     await ctx.send("Only use whole positive numbers.")
@@ -87,7 +89,7 @@ async def friday(ctx):
   utc = pytz.utc
   today = datetime.now(utc)
   if today.weekday() == 4:
-    await ctx.send("Today is Friday! TGIF!")
+    await ctx.send("Today is Friday! LET'S GOOOOOOOO")
   else:
     await ctx.send("No... not Friday...")
 
@@ -96,13 +98,20 @@ async def friday(ctx):
 async def jacob(ctx):
   """Callout to Jacob."""
   await ctx.send("He's uber gay")
-
+  
+@bot.command()
+async def react(ctx, *message):
+  """Adds text Reactions to message the user tags for the reply."""
+  await ctx.message.delete()
+  await reaction.reactchain(ctx, message)
+  
   
 @bot.command()
 async def perish(ctx):
   """Sends an insult"""
   await ctx.send(insults.insult_handler())
   await ctx.message.delete()
+  
 @bot.command()
 async def perishadd(ctx, *message):
   """adds an insult (if the user is cool B))"""
@@ -130,6 +139,7 @@ async def eliteadd(ctx, message):
 
 @bot.command()
 async def eliteremove(ctx, message):
+  """Removes an elite user (also only usable by me)"""
   result = elite.elite_gang(message)
   if ctx.author.id == 132353613715603456 and result is False:
     await ctx.send("The user isn't an elite!")
