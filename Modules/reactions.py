@@ -30,7 +30,9 @@ class React:
       'x' : '🇽',
       'y' : '🇾',
       'z' : '🇿',
-      'o2' : '🅾️'
+      'o2' : '🅾️',
+      '!' : '❗',
+      '?' : '❓'
     }
     self.charo = 0
   async def reactchain(self, ctx, message):
