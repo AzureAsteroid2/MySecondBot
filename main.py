@@ -93,6 +93,11 @@ async def friday(ctx):
   else:
     await ctx.send("No... not Friday...")
 
+@bot.command()
+async def roll(ctx):
+  """simulates a d20 dice roll"""
+  number = randint(1,20)
+  await ctx.send(f"Your roll results in: {number}")
     
 @bot.command()
 async def jacob(ctx):
