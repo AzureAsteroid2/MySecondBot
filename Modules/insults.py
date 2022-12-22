@@ -12,6 +12,7 @@ class Insults:
     return result
   async def insult_adder(self, ctx, message):
     message = " ".join(message)
+    message = message.replace("`", "")
     with open('Modules/Text_Files/insults.txt', 'a') as temp:
       temp.write(f"`'{message}' - {ctx.author}.")
       temp.close()
