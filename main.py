@@ -1,9 +1,10 @@
-"""This bot is a passion project for discord and little else. If I want to do something.
-This bot will one day make it possible. 
+"""This bot is a passion project for discord and little else. If I want to do something. This bot will one day make it possible. 
 
 (To-Do: Image editor,
-Have the !perish command get insults from a database instead of a txt file, Have users and a balance)"""
+Have the !perish command get insults from a database instead of a txt file, Have users and a balance,
+Improve error output with on_error_command)"""
 
+# all imports that are necessary for this "driver" module
 import discord, time, os, pytz, asyncio, subprocess
 from random import randint
 from discord.ext import commands
@@ -30,24 +31,24 @@ bot = commands.Bot(command_prefix="!", case_insensitive = True)
 async def on_ready(): #The bot is ready :)
   print("Ready")
 
-  
+# scalable error reporting to the user
 @bot.event
 async def on_command_error(ctx, error):
   await ErrorChad.help_me(ctx, error)
 
-  
 @bot.command()
 async def ping(ctx):
+  """Testable response time from the bot."""
   before = time.monotonic()
   message = await ctx.send("Pong!")
   ping = int((time.monotonic() - before) *1000)
   await message.edit(content = f"Pong! {ping}ms")
   await ctx.message.delete()
 
-  
 @bot.command()
 async def flip(ctx, flips = 1):
   """Flips a coin (or multiple) for a user"""
+  # import this into a separate module
   heads = 0
   tails = 0
   #controls the max amount of flips the bot will process
@@ -84,8 +85,9 @@ async def flip(ctx, flips = 1):
     except discord.Forbidden:
       await ctx.send("I don't have the permissions I need! No command for you")
 
-    
+@bot.command()
 async def friday(ctx):
+  """Uses UTC time to determine if it's Friday."""
   utc = pytz.utc
   today = datetime.now(utc)
   if today.weekday() == 4:
@@ -101,7 +103,7 @@ async def roll(ctx):
     
 @bot.command()
 async def jacob(ctx):
-  """Callout to Jacob."""
+  """Callout to my friend Jacob."""
   await ctx.send("He's uber gay")
   
 @bot.command()
@@ -119,9 +121,8 @@ async def perish(ctx):
   
 @bot.command()
 async def perishadd(ctx, *message):
-  """adds an insult (if the user is cool B))"""
+  """adds an insult (if the user is cool B) AKA on the elite list)"""
   result = elite.elite_gang(ctx.message.author.id)
-  
   if result and message != ():
     await insults.insult_adder(ctx, message)
     await ctx.send("Your insult has been added. 😎 ")
@@ -134,6 +135,7 @@ async def perishadd(ctx, *message):
 async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""
   result = elite.elite_gang(message)
+  # Checks to see if it's my user id (switch to a hidden key?)
   if ctx.author.id == 132353613715603456 and result is False:
     await ctx.send("The user was successfully added")
     await elite.elite_add(ctx, message)
