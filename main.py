@@ -148,7 +148,7 @@ async def cherishadd(ctx, *message):
   """adds a compliment (if the user is cool B) AKA on the elite list)"""
   result = elite.elite_gang(ctx.message.author.id)
   if result and message != ():
-    await insults.compliment_adder(ctx, message)
+    await compliments.compliment_adder(ctx, message)
     await ctx.send("Your compliment has been added. 😎 ")
   elif result and message == ():
     await ctx.send("You have to add a compliment you know...")
