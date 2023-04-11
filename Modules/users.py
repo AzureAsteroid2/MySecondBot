@@ -4,26 +4,33 @@ I may want to add in the future"""
 class EliteUsers():
   def __init__(self):
     self.present = False
-  def elite_gang(self, ctx):
+  async def elite_gang(self, ctx):
     """finds the user in the list (if they're present)"""
     self.present = False
+    all_users = []
     with open('Modules/Text_Files/EpicUsers.txt', 'r') as temp:
       for line in temp:
         all_users = (line.split('`'))
-      if f'{ctx}' in all_users:
-        self.present = True
+      for i in all_users:
+        i = int(i)
+        if i == ctx:
+          self.present = True
+      """
+      if f'ctx' in all_users:
+        return self.present
+      """
     return self.present
 
-  def elite_add(self, ctx, userid):
-    self.elite_gang(userid)
+  async def elite_add(self, ctx, userid):
+    await self.elite_gang(userid)
     if self.present == False:
       with open('Modules/Text_Files/EpicUsers.txt', 'a') as temp:
         temp.write(f"`{userid}")
         temp.close()
     return
     
-  def elite_remove(self, ctx, userid):
-    self.elite_gang(userid)
+  async def elite_remove(self, ctx, userid):
+    await self.elite_gang(userid)
     if self.present == True:
       temp = open('Modules/Text_Files/EpicUsers.txt', 'r')
       all_users = temp.read()

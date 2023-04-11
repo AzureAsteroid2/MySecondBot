@@ -128,7 +128,7 @@ async def perish(ctx):
 @bot.command()
 async def perishadd(ctx, *message):
   """adds an insult (if the user is cool B) AKA on the elite list)"""
-  result = elite.elite_gang(ctx.message.author.id)
+  result = await elite.elite_gang(ctx.message.author.id)
   if result and message != ():
     await insults.insult_adder(ctx, message)
     await ctx.send("Your insult has been added. 😎 ")
@@ -146,10 +146,11 @@ async def cherish(ctx):
 @bot.command()
 async def cherishadd(ctx, *message):
   """adds a compliment (if the user is cool B) AKA on the elite list)"""
-  result = elite.elite_gang(ctx.message.author.id)
+  result = await elite.elite_gang(ctx.message.author.id)
   if result and message != ():
     await compliments.compliment_adder(ctx, message)
     await ctx.send("Your compliment has been added. 😎 ")
+    print("5")
   elif result and message == ():
     await ctx.send("You have to add a compliment you know...")
   else:
@@ -158,7 +159,7 @@ async def cherishadd(ctx, *message):
 @bot.command()
 async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""
-  result = elite.elite_gang(message)
+  result = await elite.elite_gang(message)
   # Checks to see if it's my user id (switch to a hidden key?)
   if ctx.author.id == 132353613715603456 and result is False:
     await ctx.send("The user was successfully added")
@@ -184,7 +185,7 @@ async def bible(ctx):
 @bot.command()
 async def eliteremove(ctx, message):
   """Removes an elite user (also only usable by me)"""
-  result = elite.elite_gang(message)
+  result = await elite.elite_gang(message)
   if ctx.author.id == 132353613715603456 and result is False:
     await ctx.send("The user isn't an elite!")
   elif ctx.author.id == 132353613715603456 and result is True:
@@ -197,8 +198,10 @@ async def eliteremove(ctx, message):
 async def elitelist(ctx):
   """Lists all of the elite users"""
   users = await elite.elite_list(ctx, bot)
+  answer = ""
   for user in users:
-    await ctx.send(user)
+    answer += f'{user}; '
+  await ctx.send(answer)
 
 @bot.command()
 async def james(ctx):
