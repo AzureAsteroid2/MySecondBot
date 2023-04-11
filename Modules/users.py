@@ -1,3 +1,4 @@
+import discord
 """Manages users and currency that they have. Along with anything else
 I may want to add in the future"""
 class EliteUsers():
@@ -13,7 +14,6 @@ class EliteUsers():
         self.present = True
     return self.present
 
-    
   def elite_add(self, ctx, userid):
     self.elite_gang(userid)
     if self.present == False:
@@ -33,5 +33,16 @@ class EliteUsers():
       done = "`".join(all_users)
       temp = open('Modules/Text_Files/EpicUsers.txt', 'w')
       temp.write(done)
-      
     return
+
+  async def elite_list(self, ctx, bot):
+    """lists all of the users by their tags (not number ids)"""
+    with open('Modules/Text_Files/EpicUsers.txt', 'r') as temp:
+      for line in temp:
+        all_users = (line.split('`'))
+        user_tags = []
+        for user in all_users:
+          user = await bot.fetch_user(user)
+          user_tags.append(user)
+    return user_tags
+    

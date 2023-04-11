@@ -17,6 +17,8 @@ from Modules.error_handler import ErrorChad
 from Modules.users import EliteUsers
 from Modules.reactions import React
 from Modules.compliments import Compliments
+# from Modules.bible import Bible
+from Modules.scriptures import Scripture
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
@@ -26,6 +28,8 @@ twit = Twealer()
 ErrorChad = ErrorChad()
 elite = EliteUsers()
 reaction = React()
+# byble = Bible()
+scriptures = Scripture()
 bot = commands.Bot(command_prefix="!", case_insensitive = True)
 
 
@@ -165,6 +169,19 @@ async def eliteadd(ctx, message):
     await ctx.send("You can't control me! I'll do what I want!")
 
 @bot.command()
+async def verse(ctx):
+  result = scriptures.scripture_random()
+  await ctx.send(result)
+
+# Deprecated command
+'''
+@bot.command()
+async def bible(ctx):
+  verse = byble.bible_random()
+  await ctx.send(verse)
+'''
+
+@bot.command()
 async def eliteremove(ctx, message):
   """Removes an elite user (also only usable by me)"""
   result = elite.elite_gang(message)
@@ -176,6 +193,13 @@ async def eliteremove(ctx, message):
   else:
     await ctx.send("You can't control me! I'll do what I want!")
     
+@bot.command()
+async def elitelist(ctx):
+  """Lists all of the elite users"""
+  users = await elite.elite_list(ctx, bot)
+  for user in users:
+    await ctx.send(user)
+
 @bot.command()
 async def james(ctx):
   """Sends an mp3 file for James. He's a cool guy"""
