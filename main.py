@@ -1,7 +1,7 @@
 """This bot is a passion project for discord and little else. If I want to do something. This bot will one day make it possible. 
 
 (To-Do: Image editor,
-Have the !perish command get insults from a database instead of a txt file, Have users and a balance,
+Have the !perish command get insults from a database instead of a txt file, Have users and a balance, add cherish command
 Improve error output with on_error_command)"""
 
 # all imports that are necessary for this "driver" module
@@ -16,10 +16,12 @@ from Server.keep_alive import keep_alive
 from Modules.error_handler import ErrorChad
 from Modules.users import EliteUsers
 from Modules.reactions import React
+from Modules.compliments import Compliments
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
 insults = Insults()
+compliments = Compliments()
 twit = Twealer()
 ErrorChad = ErrorChad()
 elite = EliteUsers()
@@ -131,6 +133,24 @@ async def perishadd(ctx, *message):
   else:
     await ctx.send("You don't have permissions. That's an L")
 
+@bot.command()
+async def cherish(ctx):
+  """Sends a compliment"""
+  await ctx.send(compliments.compliment_handler())
+  await ctx.message.delete()
+
+@bot.command()
+async def cherishadd(ctx, *message):
+  """adds a compliment (if the user is cool B) AKA on the elite list)"""
+  result = elite.elite_gang(ctx.message.author.id)
+  if result and message != ():
+    await insults.compliment_adder(ctx, message)
+    await ctx.send("Your compliment has been added. 😎 ")
+  elif result and message == ():
+    await ctx.send("You have to add a compliment you know...")
+  else:
+    await ctx.send("You don't have permissions. That's very sad")
+    
 @bot.command()
 async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""

@@ -3,6 +3,7 @@ from random import randint
 class Insults:
   def __init__(self):
     self.insult = ""
+    
   def insult_handler(self):
     with open('Modules/Text_Files/insults.txt', 'r') as temp:
       for line in temp:
@@ -10,6 +11,7 @@ class Insults:
     amount = len(all_insults)
     result = all_insults[(randint(0, amount))]
     return result
+    
   async def insult_adder(self, ctx, message):
     message = " ".join(message)
     message = message.replace("`", "")
