@@ -150,7 +150,6 @@ async def cherishadd(ctx, *message):
   if result and message != ():
     await compliments.compliment_adder(ctx, message)
     await ctx.send("Your compliment has been added. 😎 ")
-    print("5")
   elif result and message == ():
     await ctx.send("You have to add a compliment you know...")
   else:
@@ -161,10 +160,10 @@ async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""
   result = await elite.elite_gang(message)
   # Checks to see if it's my user id (switch to a hidden key?)
-  if ctx.author.id == 132353613715603456 and result is False:
+  if ctx.author.id == 132353613715603456 and result == False:
     await ctx.send("The user was successfully added")
     await elite.elite_add(ctx, message)
-  elif ctx.author.id == 132353613715603456 and result is True:
+  elif ctx.author.id == 132353613715603456 and result:
     await ctx.send("The user is already an elite!")
   else:
     await ctx.send("You can't control me! I'll do what I want!")
@@ -186,9 +185,9 @@ async def bible(ctx):
 async def eliteremove(ctx, message):
   """Removes an elite user (also only usable by me)"""
   result = await elite.elite_gang(message)
-  if ctx.author.id == 132353613715603456 and result is False:
+  if ctx.author.id == 132353613715603456 and result == False:
     await ctx.send("The user isn't an elite!")
-  elif ctx.author.id == 132353613715603456 and result is True:
+  elif ctx.author.id == 132353613715603456 and result:
     await ctx.send("The user has been removed")
     await elite.elite_remove(ctx, message)
   else:

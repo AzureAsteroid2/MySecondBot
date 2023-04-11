@@ -8,6 +8,7 @@ class EliteUsers():
     """finds the user in the list (if they're present)"""
     self.present = False
     all_users = []
+    ctx = int(ctx)
     with open('Modules/Text_Files/EpicUsers.txt', 'r') as temp:
       for line in temp:
         all_users = (line.split('`'))
@@ -31,7 +32,8 @@ class EliteUsers():
     
   async def elite_remove(self, ctx, userid):
     await self.elite_gang(userid)
-    if self.present == True:
+    print(userid)
+    if self.present:
       temp = open('Modules/Text_Files/EpicUsers.txt', 'r')
       all_users = temp.read()
       all_users = all_users.split('`')
