@@ -2,16 +2,15 @@
 from random import randint
 class Scripture:
   def __init__(self):
-    pass
+    with open("Modules/Text_Files/scriptures.txt", "r") as file:
+      # declare and set them up here (so it only has to setup the "book" when the bot restarts)
+      self.lines = file.readlines()
+      self.amount = len(self.lines)
     
   def scripture_random(self):
     """gets a random verse from the scriptures"""
-    with open("Modules/Text_Files/scriptures.txt", "r") as file:
-      lines = file.readlines()
-      amount = len(lines)
-      result = lines[(randint(0,amount))]
-      # ignore index 0. use the books dictionary for the string
-      return result
+    result = self.lines[(randint(0,self.amount))]
+    return result
      
       
         

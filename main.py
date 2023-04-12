@@ -58,11 +58,11 @@ async def flip(ctx, flips = 1):
   heads = 0
   tails = 0
   #controls the max amount of flips the bot will process
-  amount = 100000
+  amount = 1000000
   if flips <= 0:
     await ctx.send("Only use whole positive numbers.")
   elif flips > 1 and flips <= amount:
-    for i in range(flips):
+    for _ in range(flips):
       number = randint(1,2)
       if number == 1:
         heads += 1
@@ -172,6 +172,7 @@ async def eliteadd(ctx, message):
 async def verse(ctx):
   result = scriptures.scripture_random()
   await ctx.send(result)
+  await ctx.message.delete()
 
 # Deprecated command
 '''
