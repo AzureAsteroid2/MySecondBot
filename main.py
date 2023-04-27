@@ -4,6 +4,7 @@
 Have the !perish command get insults from a database instead of a txt file, Have users and a balance, add cherish command
 Improve error output with on_error_command)"""
 
+
 # all imports that are necessary for this "driver" module
 import discord, time, os, pytz, asyncio, subprocess
 from random import randint
@@ -17,6 +18,7 @@ from Modules.error_handler import ErrorChad
 from Modules.users import EliteUsers
 from Modules.reactions import React
 from Modules.compliments import Compliments
+from Modules.responses import Responses
 # from Modules.bible import Bible
 from Modules.scriptures import Scripture
 #initialize all classes
@@ -24,6 +26,7 @@ keep_alive()
 urmom = Blackjack()
 insults = Insults()
 compliments = Compliments()
+responses = Responses()
 twit = Twealer()
 ErrorChad = ErrorChad()
 elite = EliteUsers()
@@ -31,7 +34,23 @@ reaction = React()
 # byble = Bible()
 scriptures = Scripture()
 bot = commands.Bot(command_prefix="!", case_insensitive = True)
-
+'''
+def banlookup(func):
+  async def wrapper(*args, **kwargs):
+    result = await ban.ban_gang(args[0].message.author.id)
+    if
+    return await func(*args, **kwargs)
+  return wrapper
+  
+def elitelookup():
+  async def wrapper(*args, **kwargs):
+    result = await elite.elite_gang(args[0].message.author.id)
+    if result:
+      return await func(*args, **kwargs)
+    else:
+    await args[0].send("You're not on the elite list. Take this L")
+  return wrapper
+'''
 
 @bot.event
 async def on_ready(): #The bot is ready :)
@@ -170,7 +189,22 @@ async def eliteadd(ctx, message):
 
 @bot.command()
 async def verse(ctx):
-  result = scriptures.scripture_random()
+  """Gets a random verse from the scriptures"""
+  result = scriptures.scripture_random(ctx)
+  await ctx.send(result)
+  await ctx.message.delete()
+  
+@bot.command()
+async def vnext(ctx):
+  """Goes to the next verse in the scriptures (for the user)"""
+  result = scriptures.scripture_next(ctx)
+  await ctx.send(result)
+  await ctx.message.delete()
+
+@bot.command()
+async def vprev(ctx):
+  """Goes to the previous verse in the scriptures (for the user)"""
+  result = scriptures.scripture_prev(ctx)
   await ctx.send(result)
   await ctx.message.delete()
 

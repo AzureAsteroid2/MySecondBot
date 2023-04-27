@@ -32,7 +32,6 @@ class EliteUsers():
     
   async def elite_remove(self, ctx, userid):
     await self.elite_gang(userid)
-    print(userid)
     if self.present:
       temp = open('Modules/Text_Files/EpicUsers.txt', 'r')
       all_users = temp.read()

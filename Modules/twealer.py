@@ -1,3 +1,4 @@
+# deprecated (Bot was suspended)
 """Steals a twitter post from a specific moon account
 Returns the result to main"""
 import tweepy
