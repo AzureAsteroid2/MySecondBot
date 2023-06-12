@@ -15,7 +15,7 @@ from Modules.insults import Insults
 from Modules.urmom import Blackjack
 from Server.keep_alive import keep_alive
 from Modules.error_handler import ErrorChad
-from Modules.users import EliteUsers
+from Modules.users import Users
 from Modules.reactions import React
 from Modules.compliments import Compliments
 from Modules.responses import Responses
@@ -29,28 +29,33 @@ compliments = Compliments()
 responses = Responses()
 twit = Twealer()
 ErrorChad = ErrorChad()
-elite = EliteUsers()
+elite = Users()
 reaction = React()
 # byble = Bible()
+owner_id = 132353613715603456 # my discord id! Yay!
 scriptures = Scripture()
+# all variables that are used between multiple functions
+elite_file = "EpicUsers"
+banned_file = "BannedUsers"
 bot = commands.Bot(command_prefix="!", case_insensitive = True)
-'''
-def banlookup(func):
-  async def wrapper(*args, **kwargs):
-    result = await ban.ban_gang(args[0].message.author.id)
-    if
-    return await func(*args, **kwargs)
-  return wrapper
-  
-def elitelookup():
-  async def wrapper(*args, **kwargs):
-    result = await elite.elite_gang(args[0].message.author.id)
-    if result:
-      return await func(*args, **kwargs)
-    else:
-    await args[0].send("You're not on the elite list. Take this L")
-  return wrapper
-'''
+
+async def banlookup(ctx):
+  """Simpler check to see if a user can use certain commands"""
+  result = await elite.gang_lookup(ctx.message.author.id, banned_file)
+  result = not result
+  if result == False:
+    await ctx.send("You're a Banned User. Die.")
+  return result
+
+async def elitelookup(ctx):
+  """Simpler check to see if a user can use certain commands"""
+  # print(ctx.message.author.id)
+  result = await elite.gang_lookup(ctx.message.author.id, elite_file)
+  if result == False:
+    await ctx.send("You're not an Elite User. That means you can't use this command. That's an L")
+  return result
+    
+
 
 @bot.event
 async def on_ready(): #The bot is ready :)
@@ -62,6 +67,7 @@ async def on_command_error(ctx, error):
   await ErrorChad.help_me(ctx, error)
 
 @bot.command()
+@commands.check(banlookup)
 async def ping(ctx):
   """Testable response time from the bot."""
   before = time.monotonic()
@@ -70,7 +76,9 @@ async def ping(ctx):
   await message.edit(content = f"Pong! {ping}ms")
   await ctx.message.delete()
 
+#this is ugly as crud.
 @bot.command()
+@commands.check(banlookup)
 async def flip(ctx, flips = 1):
   """Flips a coin (or multiple) for a user"""
   # import this into a separate module
@@ -111,6 +119,7 @@ async def flip(ctx, flips = 1):
       await ctx.send("I don't have the permissions I need! No command for you")
 
 @bot.command()
+@commands.check(banlookup)
 async def friday(ctx):
   """Uses UTC time to determine if it's Friday."""
   utc = pytz.utc
@@ -121,17 +130,20 @@ async def friday(ctx):
     await ctx.send("No... not Friday...")
 
 @bot.command()
+@commands.check(banlookup)
 async def roll(ctx):
   """simulates a d20 dice roll"""
   number = randint(1,20)
   await ctx.send(f"Your roll results in: {number}")
     
 @bot.command()
+@commands.check(banlookup)
 async def jacob(ctx):
   """Callout to my friend Jacob."""
   await ctx.send("He's uber gay")
   
 @bot.command()
+@commands.check(banlookup)
 async def react(ctx, *message):
   """Adds text Reactions to message the user tags for the reply."""
   await ctx.message.delete()
@@ -139,15 +151,17 @@ async def react(ctx, *message):
   
   
 @bot.command()
+@commands.check(banlookup)
 async def perish(ctx):
   """Sends an insult"""
   await ctx.send(insults.insult_handler())
   await ctx.message.delete()
   
 @bot.command()
+@commands.check(banlookup)
 async def perishadd(ctx, *message):
   """adds an insult (if the user is cool B) AKA on the elite list)"""
-  result = await elite.elite_gang(ctx.message.author.id)
+  result = await elite.gang_lookup(ctx.message.author.id, elite_file)
   if result and message != ():
     await insults.insult_adder(ctx, message)
     await ctx.send("Your insult has been added. 😎 ")
@@ -157,37 +171,47 @@ async def perishadd(ctx, *message):
     await ctx.send("You don't have permissions. That's an L")
 
 @bot.command()
+@commands.check(banlookup)
 async def cherish(ctx):
   """Sends a compliment"""
-  await ctx.send(compliments.compliment_handler())
-  await ctx.message.delete()
+  file_name = "compliments"
+  await response(ctx, file_name)
+  
 
 @bot.command()
+@commands.check(elitelookup)
+@commands.check(banlookup)
 async def cherishadd(ctx, *message):
   """adds a compliment (if the user is cool B) AKA on the elite list)"""
-  result = await elite.elite_gang(ctx.message.author.id)
-  if result and message != ():
+  if message != ():
     await compliments.compliment_adder(ctx, message)
     await ctx.send("Your compliment has been added. 😎 ")
-  elif result and message == ():
+  elif message == ():
     await ctx.send("You have to add a compliment you know...")
   else:
     await ctx.send("You don't have permissions. That's very sad")
     
 @bot.command()
+@commands.check(banlookup)
 async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""
-  result = await elite.elite_gang(message)
+  result = await elite.gang_lookup(message, elite_file)
   # Checks to see if it's my user id (switch to a hidden key?)
-  if ctx.author.id == 132353613715603456 and result == False:
+  if ctx.author.id == owner_id and result == False:
     await ctx.send("The user was successfully added")
-    await elite.elite_add(ctx, message)
-  elif ctx.author.id == 132353613715603456 and result:
+    await elite.gang_add(ctx, message, elite_file)
+  elif ctx.author.id == owner_id and result:
     await ctx.send("The user is already an elite!")
   else:
     await ctx.send("You can't control me! I'll do what I want!")
-
+    
+async def response(ctx, file_name):
+  """For every single type of response (joke, insult, etc) handle that here."""
+  await ctx.send(responses.response_handler(file_name))
+  await ctx.message.delete()
+  
 @bot.command()
+@commands.check(banlookup)
 async def verse(ctx):
   """Gets a random verse from the scriptures"""
   result = scriptures.scripture_random(ctx)
@@ -195,6 +219,8 @@ async def verse(ctx):
   await ctx.message.delete()
   
 @bot.command()
+@commands.check(elitelookup)
+@commands.check(banlookup)
 async def vnext(ctx):
   """Goes to the next verse in the scriptures (for the user)"""
   result = scriptures.scripture_next(ctx)
@@ -202,6 +228,8 @@ async def vnext(ctx):
   await ctx.message.delete()
 
 @bot.command()
+@commands.check(elitelookup)
+@commands.check(banlookup)
 async def vprev(ctx):
   """Goes to the previous verse in the scriptures (for the user)"""
   result = scriptures.scripture_prev(ctx)
@@ -216,28 +244,66 @@ async def bible(ctx):
   await ctx.send(verse)
 '''
 
+#clean up to have a decorator check to see if it's the owner (me)
 @bot.command()
 async def eliteremove(ctx, message):
   """Removes an elite user (also only usable by me)"""
-  result = await elite.elite_gang(message)
-  if ctx.author.id == 132353613715603456 and result == False:
+  result = await elite.gang_lookup(message, elite_file)
+  if ctx.author.id == owner_id and result == False:
     await ctx.send("The user isn't an elite!")
-  elif ctx.author.id == 132353613715603456 and result:
+  elif ctx.author.id == owner_id and result:
     await ctx.send("The user has been removed")
-    await elite.elite_remove(ctx, message)
+    await elite.gang_remove(ctx, message, elite_file)
   else:
     await ctx.send("You can't control me! I'll do what I want!")
     
 @bot.command()
+@commands.check(banlookup)
 async def elitelist(ctx):
   """Lists all of the elite users"""
-  users = await elite.elite_list(ctx, bot)
+  users = await elite.gang_list(ctx, bot, elite_file)
   answer = ""
   for user in users:
     answer += f'{user}; '
   await ctx.send(answer)
-
+  
 @bot.command()
+async def banadd(ctx, message):
+  """adds a new elite user (only usable by me)"""
+  result = await elite.gang_lookup(message, banned_file)
+  # Checks to see if it's my user id (switch to a hidden key?)
+  if ctx.author.id == owner_id and result == False:
+    await ctx.send("The user was successfully added")
+    await elite.gang_add(ctx, message, banned_file)
+  elif ctx.author.id == owner_id and result:
+    await ctx.send("The user is already a banned user")
+  else:
+    await ctx.send("You can't control me! I'll do what I want!")
+    
+@bot.command()
+async def banremove(ctx, message):
+  """Removes an elite user (also only usable by me)"""
+  result = await elite.gang_lookup(message, banned_file)
+  if ctx.author.id == owner_id and result == False:
+    await ctx.send("The user isn't a banned user!")
+  elif ctx.author.id == owner_id and result:
+    await ctx.send("The user has been removed")
+    await elite.gang_remove(ctx, message, banned_file)
+  else:
+    await ctx.send("You can't control me! I'll do what I want!")
+    
+@bot.command()
+@commands.check(banlookup)
+async def banlist(ctx):
+  """Lists all of the elite users"""
+  users = await elite.gang_list(ctx, bot, banned_file)
+  answer = ""
+  for user in users:
+    answer += f'{user}; '
+  await ctx.send(answer)
+  
+@bot.command()
+@commands.check(banlookup)
 async def james(ctx):
   """Sends an mp3 file for James. He's a cool guy"""
   try:
@@ -250,17 +316,20 @@ async def james(ctx):
 
     
 @bot.command()
+@commands.check(banlookup)
 async def blackjack(ctx): #runs and manages a game of blackjack
   await urmom.start(ctx, bot)
 
   
 @bot.command()
+@commands.check(banlookup)
 async def tweet(ctx, twitterid = 'mymoonphaseapp'):
   """Posts the tweet using a twitterid (the @name)."""
   await ctx.send(twit.steal(twitterid))
 
 
 @bot.command()
+@commands.check(banlookup)
 async def tweet_daily(ctx, twitterid):
   """Sets up daily tweets from whatever twitterid you choose"""
   pass
