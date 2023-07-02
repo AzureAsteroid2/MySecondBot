@@ -154,21 +154,15 @@ async def react(ctx, *message):
 @commands.check(banlookup)
 async def perish(ctx):
   """Sends an insult"""
-  await ctx.send(insults.insult_handler())
-  await ctx.message.delete()
+  file_name = "insults"
+  await response(ctx, file_name)
   
 @bot.command()
 @commands.check(banlookup)
 async def perishadd(ctx, *message):
   """adds an insult (if the user is cool B) AKA on the elite list)"""
-  result = await elite.gang_lookup(ctx.message.author.id, elite_file)
-  if result and message != ():
-    await insults.insult_adder(ctx, message)
-    await ctx.send("Your insult has been added. 😎 ")
-  elif result and message == ():
-    await ctx.send("You have to add an insult you know...")
-  else:
-    await ctx.send("You don't have permissions. That's an L")
+  file_name = "insults"
+  await responseadd(ctx, file_name, message)
 
 @bot.command()
 @commands.check(banlookup)
@@ -183,13 +177,9 @@ async def cherish(ctx):
 @commands.check(banlookup)
 async def cherishadd(ctx, *message):
   """adds a compliment (if the user is cool B) AKA on the elite list)"""
-  if message != ():
-    await compliments.compliment_adder(ctx, message)
-    await ctx.send("Your compliment has been added. 😎 ")
-  elif message == ():
-    await ctx.send("You have to add a compliment you know...")
-  else:
-    await ctx.send("You don't have permissions. That's very sad")
+  file_name = "compliments"
+  await responseadd(ctx, file_name, message)
+  
     
 @bot.command()
 @commands.check(banlookup)
@@ -209,6 +199,13 @@ async def response(ctx, file_name):
   """For every single type of response (joke, insult, etc) handle that here."""
   await ctx.send(responses.response_handler(file_name))
   await ctx.message.delete()
+
+async def responseadd(ctx, file_name, message):
+  if message != ():
+    await responses.response_adder(ctx, message, file_name)
+    await ctx.send("Your compliment has been added. 😎 ")
+  else:
+    await ctx.send("You have to add a compliment you know...")
   
 @bot.command()
 @commands.check(banlookup)

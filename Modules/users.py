@@ -1,6 +1,6 @@
 import discord
 """Manages users and currency that they have. Along with anything else
-I may want to add in the future"""
+I may want to add in the future (change to SQLite)"""
 class Users():
   def __init__(self):
     self.present = False
