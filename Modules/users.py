@@ -29,7 +29,6 @@ class Users():
     if self.present == False:
       with open(f'Modules/Text_Files/{file}.txt', 'a') as temp:
         temp.write(f"`{userid}")
-        print(temp)
         temp.close()
     return
     

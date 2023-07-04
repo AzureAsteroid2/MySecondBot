@@ -11,21 +11,17 @@ from random import randint
 from discord.ext import commands
 from Modules.twealer import Twealer
 from datetime import datetime
-from Modules.insults import Insults
 from Modules.urmom import Blackjack
 from Server.keep_alive import keep_alive
 from Modules.error_handler import ErrorChad
 from Modules.users import Users
 from Modules.reactions import React
-from Modules.compliments import Compliments
 from Modules.responses import Responses
 # from Modules.bible import Bible
 from Modules.scriptures import Scripture
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
-insults = Insults()
-compliments = Compliments()
 responses = Responses()
 twit = Twealer()
 ErrorChad = ErrorChad()
@@ -54,6 +50,14 @@ async def elitelookup(ctx):
   if result == False:
     await ctx.send("You're not an Elite User. That means you can't use this command. That's an L")
   return result
+
+async def melookup(ctx):
+  """Checks to see if it's me (if it's not. Then tell the user)"""
+  if owner_id != ctx.message.author.id:
+    await ctx.send("You're not allowed to use this command")
+    return False
+  else:
+    return True
     
 
 
@@ -143,6 +147,7 @@ async def jacob(ctx):
   await ctx.send("He's uber gay")
   
 @bot.command()
+@commands.check(elitelookup)
 @commands.check(banlookup)
 async def react(ctx, *message):
   """Adds text Reactions to message the user tags for the reply."""
@@ -158,6 +163,7 @@ async def perish(ctx):
   await response(ctx, file_name)
   
 @bot.command()
+@commands.check(elitelookup)
 @commands.check(banlookup)
 async def perishadd(ctx, *message):
   """adds an insult (if the user is cool B) AKA on the elite list)"""
@@ -182,19 +188,17 @@ async def cherishadd(ctx, *message):
   
     
 @bot.command()
-@commands.check(banlookup)
+@commands.check(melookup)
 async def eliteadd(ctx, message):
   """adds a new elite user (only usable by me)"""
   result = await elite.gang_lookup(message, elite_file)
   # Checks to see if it's my user id (switch to a hidden key?)
-  if ctx.author.id == owner_id and result == False:
-    await ctx.send("The user was successfully added")
-    await elite.gang_add(ctx, message, elite_file)
-  elif ctx.author.id == owner_id and result:
+  if result:
     await ctx.send("The user is already an elite!")
   else:
-    await ctx.send("You can't control me! I'll do what I want!")
-    
+    await ctx.send("The user was successfully added")
+    await elite.gang_add(ctx, message, elite_file)
+  
 async def response(ctx, file_name):
   """For every single type of response (joke, insult, etc) handle that here."""
   await ctx.send(responses.response_handler(file_name))

@@ -7,3 +7,4 @@ class ErrorChad():
     if isinstance(error, discord.ext.commands.errors.BadArgument):
       if "!flip" in ctx.message.content:
         await ctx.send("Only use whole numbers!")
+    print(error)
