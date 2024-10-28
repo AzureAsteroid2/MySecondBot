@@ -8,7 +8,6 @@ Improve error output with on_error_command)"""
 import discord, time, os, pytz, asyncio, subprocess
 from random import randint
 from discord.ext import commands
-from Modules.twealer import Twealer
 from datetime import datetime
 from Modules.insults import Insults
 from Modules.urmom import Blackjack
@@ -16,15 +15,17 @@ from Server.keep_alive import keep_alive
 from Modules.error_handler import ErrorChad
 from Modules.users import EliteUsers
 from Modules.reactions import React
+import Modules.responses as talk_back
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
 insults = Insults()
-twit = Twealer()
+intents = discord.Intents.default()
+intents.message_content = True  # Enable message content intent for message handling
 ErrorChad = ErrorChad()
 elite = EliteUsers()
 reaction = React()
-bot = commands.Bot(command_prefix="!", case_insensitive = True)
+bot = commands.Bot(command_prefix="!", case_insensitive = True, intents=intents)
 
 
 @bot.event
@@ -35,6 +36,14 @@ async def on_ready(): #The bot is ready :)
 @bot.event
 async def on_command_error(ctx, error):
   await ErrorChad.help_me(ctx, error)
+
+@bot.event
+async def on_message(message):
+  try:
+    await message.channel.send(talk_back.responses[message.content])
+  except KeyError:
+    await bot.process_commands(message)
+
 
 @bot.command()
 async def ping(ctx):
@@ -78,7 +87,7 @@ async def flip(ctx, flips = 1):
          await message.send(file=discord.File('Media/Heads.png'))
         #reactions = ["🇭", "🇪", "🇦", "🇩", "🇸"]
       else:
-        await message.send(file=discord.File('Media/Tails.png'))
+        await message.send(file=discord.File('.Media/Tails.png'))
         #reactions = ["🇹", "🇦", "🇮", "🇱", "🇸"]
      # for i in reactions:
         #await message.add_reaction(i)
@@ -173,22 +182,7 @@ async def blackjack(ctx): #runs and manages a game of blackjack
   await urmom.start(ctx, bot)
 
   
-@bot.command()
-async def tweet(ctx, twitterid = 'mymoonphaseapp'):
-  """Posts the tweet using a twitterid (the @name)."""
-  await ctx.send(twit.steal(twitterid))
+bot.run(os.environ['token'])
 
-
-@bot.command()
-async def tweet_daily(ctx, twitterid):
-  """Sets up daily tweets from whatever twitterid you choose"""
-  pass
-
-  
-try:
-  bot.run(os.environ['token'])
-except:
-  print("restarting")
-  subprocess.run("kill 1", shell = True)
 
 
