@@ -9,7 +9,7 @@ class Users():
     self.present = False
     all_users = []
     ctx = int(ctx)
-    with open(f'Modules/Text_Files/{file}.txt', 'r') as temp:
+    with open(f'Text_Files/{file}.txt', 'r') as temp:
       for line in temp:
         all_users = (line.split('`'))
       for i in all_users:
@@ -27,7 +27,7 @@ class Users():
   async def gang_add(self, ctx, userid, file):
     await self.gang_lookup(userid, file)
     if self.present == False:
-      with open(f'Modules/Text_Files/{file}.txt', 'a') as temp:
+      with open(f'Text_Files/{file}.txt', 'a') as temp:
         temp.write(f"`{userid}")
         temp.close()
     return
@@ -35,19 +35,19 @@ class Users():
   async def gang_remove(self, ctx, userid, file):
     await self.gang_lookup(userid, file)
     if self.present:
-      temp = open(f'Modules/Text_Files/{file}.txt', 'r')
+      temp = open(f'Text_Files/{file}.txt', 'r')
       all_users = temp.read()
       all_users = all_users.split('`')
       if userid in all_users:
         all_users.remove(userid)
       done = "`".join(all_users)
-      temp = open(f'Modules/Text_Files/{file}.txt', 'w')
+      temp = open(f'Text_Files/{file}.txt', 'w')
       temp.write(done)
     return
 
   async def gang_list(self, ctx, bot, file):
     """lists all of the users by their tags (not number ids)"""
-    with open(f'Modules/Text_Files/{file}.txt', 'r') as temp:
+    with open(f'Text_Files/{file}.txt', 'r') as temp:
       for line in temp:
         all_users = (line.split('`'))
         user_tags = []
