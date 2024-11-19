@@ -5,7 +5,7 @@ class Responses:
     pass
     
   def response_handler(self, response):
-    with open(f'Text_Files/{response}.txt', 'r') as temp:
+    with open(f'MySecondBot/Modules/Text_Files/{response}.txt', 'r') as temp:
       for line in temp:
         all_responses = (line.split('`'))
     amount = len(all_responses)
@@ -15,6 +15,6 @@ class Responses:
   async def response_adder(self, ctx, message, response):
     message = " ".join(message)
     message = message.replace("`", "")
-    with open(f'Text_Files/{response}.txt', 'a') as temp:
+    with open(f'MySecondBot/Modules/Text_Files/{response}.txt', 'a') as temp:
       temp.write(f"`'{message}' - {ctx.author}.")
       temp.close()

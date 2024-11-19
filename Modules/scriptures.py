@@ -3,7 +3,7 @@ from random import randint
 class Scripture:
   def __init__(self):
     self.user_spot = {}
-    with open("Text_Files/scriptures.txt", "r") as file:
+    with open("MySecondBot/Modules/Text_Files/scriptures.txt", "r") as file:
       # declare and set them up here (so it only has to setup the "book" when the bot restarts)
       self.lines = file.readlines()
       self.amount = len(self.lines)

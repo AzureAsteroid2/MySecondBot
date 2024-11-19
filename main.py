@@ -10,18 +10,19 @@ import discord, time, os, pytz, asyncio, subprocess
 from random import randint
 from discord.ext import commands
 from datetime import datetime
-from Modules.urmom import Blackjack
+from MySecondBot.Modules.urmom import Blackjack
+from MySecondBot.Modules import talk_back
 from Server.keep_alive import keep_alive
-from Modules.error_handler import ErrorChad
-from Modules.users import Users
-from Modules.reactions import React
-from Modules.responses import Responses
-from Modules.scriptures import Scripture
+from MySecondBot.Modules.error_handler import ErrorChad
+from MySecondBot.Modules.users import Users
+from MySecondBot.Modules.reactions import React
+from MySecondBot.Modules.responses import Responses
+from MySecondBot.Modules.scriptures import Scripture
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
 responses = Responses()
-import Modules.talk_back
+import MySecondBot.Modules.talk_back
 #initialize all classes
 keep_alive()
 urmom = Blackjack()
@@ -110,9 +111,9 @@ async def flip(ctx, flips = 1):
       else:
         tails += 1
     if heads >= tails:
-      temp = 'Media/Heads.png'
+      temp = 'MySecondBot/Media/Heads.png'
     else:
-      temp = 'Media/Tails.png'
+      temp = 'MySecondBot/Media/Tails.png'
     await ctx.send(f"You had {heads} heads and {tails} tails")
     await ctx.send(file=discord.File(temp))
   elif flips > amount:
@@ -122,10 +123,10 @@ async def flip(ctx, flips = 1):
     message = ctx
     try:
       if number == 1:
-         await message.send(file=discord.File('Media/Heads.png'))
+         await message.send(file=discord.File('MySecondBot/Media/Heads.png'))
         #reactions = ["🇭", "🇪", "🇦", "🇩", "🇸"]
       else:
-        await message.send(file=discord.File('.Media/Tails.png'))
+        await message.send(file=discord.File('MySecondBot/Media/Tails.png'))
         #reactions = ["🇹", "🇦", "🇮", "🇱", "🇸"]
      # for i in reactions:
         #await message.add_reaction(i)
@@ -318,7 +319,7 @@ async def banlist(ctx):
 async def james(ctx):
   """Sends an mp3 file for James. He's a cool guy"""
   try:
-    message = await ctx.send(file=discord.File('Media/hello_mario.mp3'))
+    message = await ctx.send(file=discord.File('MySecondBot/Media/hello_mario.mp3'))
     reactions = ["🇭", "ℹ️", "👀", "🇲", "🇦", "🇷", "🇮", "🇴", "‼️"]
     for i in reactions:
       await message.add_reaction(i)

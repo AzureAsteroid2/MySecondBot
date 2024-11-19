@@ -5,7 +5,7 @@ class Compliments:
     self.compliment = ""
     
   def compliment_handler(self):
-    with open('Text_Files/compliments.txt', 'r') as temp:
+    with open('MySecondBot/Modules/Text_Files/compliments.txt', 'r') as temp:
       for line in temp:
         all_compliments = (line.split('`'))
     amount = len(all_compliments)
@@ -15,6 +15,6 @@ class Compliments:
   async def compliment_adder(self, ctx, message):
     message = " ".join(message)
     message = message.replace("`", "")
-    with open('Text_Files/compliments.txt', 'a') as temp:
+    with open('MySecondBot/Modules/Text_Files/compliments.txt', 'a') as temp:
       temp.write(f"`'{message}' - {ctx.author}.")
       temp.close()
